@@ -130,18 +130,13 @@ public class EmployeeView {
 	 * 사번이 일치하는 사원 정보 조회
 	 */
 	public void selectEmpId() {
-		System.out.println("======== 사번 일치하는 사원 조회 =======");
+		System.out.println("<사번이 일치하는 사원 정보 조회>");
 		
-		System.out.println("사번 입력 : ");
-		int inputEmpNo = sc.nextInt();
+		// 사번
+		int empId = inputEmpId();
 		
-		for(Employee i : empList) {
-			if(i.getEmpId() == inputEmpNo) {
-				System.out.println(i);
-			}else {
-				System.out.println("일치하는 사원이 없습니다.");
-			}
-		}
+		printOne(dao.selectEmpId(empId));
+		
 	}
 	
 	
@@ -322,7 +317,7 @@ public class EmployeeView {
 		System.out.print("부서명 : ");
 		String departmentTitle = sc.nextLine();
 		
-		dao.selectDeptEmp(departmentTitle);
+		printAll(dao.selectDeptEmp(departmentTitle));
 	}
 	
 	/**
