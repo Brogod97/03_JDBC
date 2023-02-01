@@ -7,7 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.kh.emp.model.vo.Employee;
 
@@ -421,13 +423,11 @@ public class EmployeeDAO {
 					+ "FROM EMPLOYEE\r\n"
 					+ "LEFT JOIN DEPARTMENT ON (DEPT_ID = DEPT_CODE)\r\n"
 					+ "JOIN JOB USING (JOB_CODE)\r\n"
-					+ "WHERE EMP_NO = ?";
+					+ "WHERE EMP_ID = '" + empId + "'";
 			
-			pstmt = conn.prepareStatement(sql);
+			stmt = conn.createStatement();
 			
-			pstmt.setInt(1, empId);
-			
-			rs = pstmt.executeQuery();
+			rs = stmt.executeQuery(sql);
 			
 			if(rs.next()) {
 				String empName = rs.getString("EMP_NAME");
@@ -456,5 +456,53 @@ public class EmployeeDAO {
 		}
 		
 		return emp;
+	}
+
+	public List<Employee> selectSalaryEmp(int salary){
+		List<Employee> empList = new ArrayList<>();
+		
+		try {
+			Class.forName(driver);
+			conn = DriverManager.getConnection(url, user, pw);
+
+			String sql ="SELECT EMP_ID, EMP_NAME, EMP_NO, EMAIL, PHONE, NVL(DEPT_TITLE, '부서없음') DEPT_TITLE, JOB_NAME, SALARY\r\n"
+					+ "FROM EMPLOYEE\r\n"
+					+ "LEFT JOIN DEPARTMENT ON (DEPT_ID = DEPT_CODE)\r\n"
+					+ "JOIN JOB USING (JOB_CODE)\r\n"
+					+ "WHERE SALARY >= ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, salary);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				int empId = rs.getInt("EMP_ID");
+				String empName = rs.getString("EMP_NAME");
+				String empNo = rs.getString("EMP_NO");
+				String email = rs.getString("EMAIL");
+				String phone = rs.getString("PHONE");
+				String departmentTitle = rs.getString("DEPT_TITLE");
+				String jobName = rs.getString("JOB_NAME");
+				salary = rs.getInt("SALARY");
+				
+				Employee emp = new Employee(empId, empName, empNo, email, 
+							phone, departmentTitle, jobName, salary);
+				
+				empList.add(emp);
+			}
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return empList;
 	}
 }

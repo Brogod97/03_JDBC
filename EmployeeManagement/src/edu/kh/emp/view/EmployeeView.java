@@ -1,9 +1,11 @@
 package edu.kh.emp.view;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 import edu.kh.emp.model.dao.EmployeeDAO;
 //import edu.kh.emp.model.dao.EmployeeDAO;
@@ -324,13 +326,20 @@ public class EmployeeView {
 	 * 입력 받은 급여 이상을 받는 모든 사원 정보 조회
 	 */
 	public void selectSalaryEmp() {
+		System.out.println("<입력 받은 급여 이상을 받는 모든 사원 정보 조회>");
 		
+		System.out.print("급여 입력 : ");
+		int salary = sc.nextInt();
+		sc.nextLine();
+		
+		printAll(dao.selectSalaryEmp(salary));
 	}
 	
 	/**
 	 * 부서별 급여 합 전체 조회
 	 */
 	public void selectDeptTotalSalary() {
+
 		
 	}
 	
