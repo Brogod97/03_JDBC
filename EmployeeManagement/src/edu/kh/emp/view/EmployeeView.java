@@ -1,11 +1,11 @@
 package edu.kh.emp.view;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
-import java.util.Set;
 
 import edu.kh.emp.model.dao.EmployeeDAO;
 //import edu.kh.emp.model.dao.EmployeeDAO;
@@ -137,7 +137,9 @@ public class EmployeeView {
 		// 사번
 		int empId = inputEmpId();
 		
-		printOne(dao.selectEmpId(empId));
+		Employee emp = dao.selectEmpId(empId);
+		
+		printOne(emp);
 		
 	}
 	
@@ -339,15 +341,28 @@ public class EmployeeView {
 	 * 부서별 급여 합 전체 조회
 	 */
 	public void selectDeptTotalSalary() {
-
+		System.out.println("<부서별 급여 합 전체 조회>");
 		
+		Map<String, Integer> map = dao.selectDeptTotalSalary();
+		
+		for(String key : map.keySet()) {
+			Object value = map.get(key);
+			
+			System.out.println(key + " : " + value + "원");
+		}
 	}
 	
 	/**
 	 * 직급별 급여 평균 조회
 	 */
 	public void selectJobAvgSalary() {
+		System.out.println("<직급별 급여 평균 조회>");
 		
+		Map<String, Double> map = dao.selectJobAvgSalary();
 		
+		for(String key : map.keySet()) {
+			Object value = map.get(key);
+			System.out.println(key + " : " + value + "원");
+		}
 	}
 }
