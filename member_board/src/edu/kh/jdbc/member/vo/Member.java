@@ -18,10 +18,11 @@ public class Member {
 		this.memberGender = memberGender;
 	}
 
-	public Member(int memberNo, String memberId, String memberName, String memberGender, String enrollDate) {
+	public Member(int memberNo, String memberId, String memberPw, String memberName, String memberGender, String enrollDate) {
 		super();
 		this.memberNo = memberNo;
 		this.memberId = memberId;
+		this.memberPw = memberPw;
 		this.memberName = memberName;
 		this.memberGender = memberGender;
 		this.enrollDate = enrollDate;
@@ -82,7 +83,5 @@ public class Member {
 	public void setSecessionFlag(String secessionFlag) {
 		this.secessionFlag = secessionFlag;
 	}
-	
-	
 	
 }
