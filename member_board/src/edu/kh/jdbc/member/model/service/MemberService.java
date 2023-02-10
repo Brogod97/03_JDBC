@@ -14,51 +14,38 @@ import edu.kh.jdbc.member.vo.Member;
 public class MemberService {
 	
 	private MemberDAO dao = new MemberDAO();
-
-	/** 내 정보 조회 서비스
-	 * @param loginMember
-	 * @return member
-	 */
-	public Member selectMyInfo(Member loginMember) {
-		Connection conn = getConnection();
-		
-		Member member = dao.selectMyInfo(conn, loginMember);
-		
-		close(conn);
-		
-		return member;
-	}
 	
 	/** 회원 목록 조회 서비스
-	 * @return list
+	 * @return memberList
+	 * @throws Exception
 	 */
-	public List<Member> selectAll() {
-		Connection conn = getConnection();
+	public List<Member> selectAll() throws Exception {
+		Connection conn = getConnection(); // 커넥션 생성
 		
-		List<Member> list = dao.selectAll(conn);
+		// DAO 메서드 호출 후 결과 반환 받기
+		List<Member> memberList = dao.selectAll(conn);
 		
-		close(conn);
+		close(conn); // 커넥션 반환
 		
-		return list;
+		return memberList;
 	}
 
 	/** 회원 정보 수정 서비스
-	 * @param loginMember
-	 * @param inputName
-	 * @param inputGender
+	 * @param member
 	 * @return result
+	 * @throws Exception
 	 */
-	public int updateMember(Member loginMember, String inputName, String inputGender) {
+	public int updateMember(Member member) throws Exception {
+		// 커넥션 생성
 		Connection conn = getConnection();
 		
-		int result = dao.updateMember(conn, loginMember, inputName, inputGender);
+		int result = dao.updateMember(conn, member);
 		
-		if(result > 0) {
-			commit(conn);
-		}else {
-			rollback(conn);
-		}
+		// 트랜잭션 제어 처리
+		if(result > 0) commit(conn);
+		else 		   rollback(conn);
 		
+		// 커넥션 반환
 		close(conn);
 		
 		return result;
@@ -69,11 +56,12 @@ public class MemberService {
 	 * @param newPw2
 	 * @return result
 	 */
-	public int updatePw(Member loginMember, String newPw2) {
+	public int updatePw(String currentPw, String newPw1, int memberNo) throws Exception {
 		Connection conn = getConnection();
 		
-		int result = dao.updatePw(conn, loginMember, newPw2);
+		int result = dao.updatePw(conn, currentPw, newPw1, memberNo);
 		
+		// 트랜잭션 제어 처리
 		if(result > 0) {
 			commit(conn);
 		}else {
@@ -86,25 +74,22 @@ public class MemberService {
 	}
 
 	/** 회원 탈퇴 서비스
-	 * @param loginMember
+	 * @param memberPw
+	 * @param memberNo
 	 * @return result
+	 * @throws Exception
 	 */
-	public int secession(Member loginMember) {
+	public int secession(String memberPw, int memberNo) throws Exception {
 		Connection conn = getConnection();
 		
-		int result = dao.secession(conn, loginMember);
+		int result = dao.secession(conn, memberPw, memberNo);
 		
-		if(result > 0) {
-			commit(conn);
-		}else {
-			rollback(conn);
-		}
+		if(result > 0) commit(conn);
+		else 			rollback(conn);
 		
 		close(conn);
 		
 		return result;
 	}
-
-
 
 }
