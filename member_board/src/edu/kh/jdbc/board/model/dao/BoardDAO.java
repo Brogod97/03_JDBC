@@ -78,10 +78,145 @@ public class BoardDAO {
 		return boardList;
 	}
 
-	public int nextBoardNo(Connection conn) {
-		return 0;
+	/** 다음 게시글 번호 생성 DAO
+	 * @param conn
+	 * @return boardNo
+	 * @throws Exception
+	 */
+	public int nextBoardNo(Connection conn) throws Exception {
+		int boardNo = 0;
+		
+		try {
+			String sql = prop.getProperty("nextBoardNo");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery(); // select 수행
+			
+			if(rs.next()) { // 조회 결과가 1행이기 때문에 if문 사용
+				boardNo = rs.getInt(1); // 첫번째 컬럼값 == SEQ_BOARD_NO.NEXTVAL
+			}
+		} finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return boardNo;
 	}
 
-	
+	/** 게시글 등록 DAO
+	 * @param conn
+	 * @param board
+	 * @return result
+	 * @throws Exception
+	 */
+	public int insertBoard(Connection conn, Board board) throws Exception {
+		int result = 0;
+		
+		try {
+			String sql = prop.getProperty("insertBoard");
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, board.getBoardNo());
+			pstmt.setString(2, board.getBoardTitle());
+			pstmt.setString(3, board.getBoardContent());
+			pstmt.setInt(4, board.getBoardNo());
+			
+			result = pstmt.executeUpdate();
+			
+		}finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
 
+	/** 조회수 증가 DAO
+	 * @param conn
+	 * @param boardNo
+	 * @return
+	 * @throws Exception
+	 */
+	public int increaseReadCount(Connection conn, int boardNo) throws Exception {
+		int result = 0;
+		
+		try {
+			String sql = prop.getProperty("increaseReadCount");
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, boardNo);
+			
+			result = pstmt.executeUpdate();
+		}finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+	/** 게시글 수정 DAO
+	 * @param conn
+	 * @param board
+	 * @return result
+	 * @throws Exception
+	 */
+	public int updateBoard(Connection conn, Board board) throws Exception {
+		int result = 0;
+		
+		try {
+			String sql = prop.getProperty("updateBoard");
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, board.getBoardTitle());
+			pstmt.setString(2, board.getBoardContent());
+			pstmt.setInt(3, board.getBoardNo());
+			
+			result = pstmt.executeUpdate();
+			
+		}finally {
+			close(pstmt);
+		}
+		
+		return result;
+	}
+
+	/** 게시글 상세 조회 DAO
+	 * @param conn
+	 * @param boardNo
+	 * @return board
+	 * @throws Exception
+	 */
+	public Board selectBoard(Connection conn, int boardNo) throws Exception {
+		// 결과 저장용 변수 선언
+		Board board = null;
+		
+		try {
+			String sql = prop.getProperty("selectBoard");	// SQL 얻어오기
+			
+			pstmt = conn.prepareStatement(sql);	// PreparedStatement 생성
+			
+			pstmt.setInt(1, boardNo); // ? 알맞은 값 대입
+			
+			rs = pstmt.executeQuery(); // SQL(SELECT) 수행 후 결과(ResultSet) 반환 받기
+			
+			if(rs.next()) { // 조회 결과가 있을 경우
+				board = new Board(); // Board 객체 생성 == board는 null 아님
+				
+				board.setBoardNo( 		rs.getInt	("BOARD_NO") 		);
+				board.setBoardTitle( 	rs.getString("BOARD_TITLE") 	);
+				board.setBoardContent( 	rs.getString("BOARD_CONTENT") 	);
+				board.setMemberNo( 		rs.getInt	("MEMBER_NO") 		);
+				board.setMemberName( 	rs.getString("MEMBER_NM")		);
+				board.setReadCount( 	rs.getInt	("READ_COUNT") 		);
+				board.setCreateDate(	rs.getString("CREATE_DT") 		);
+			}
+			
+		}finally {
+			close(rs);
+			close(pstmt);
+		}
+		
+		return board; // 조회 결과 결과
+	}
 }
